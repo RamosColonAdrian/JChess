@@ -8,7 +8,10 @@ import com.chess.engine.board.Tile;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import static com.chess.engine.board.Move.*;
 
 public class Knight extends Piece{
 
@@ -25,27 +28,35 @@ public class Knight extends Piece{
 
     /**
      * Calculates the legal moves for the knight.
+     *
      * @param board
      * @return
      */
     @Override
-    public List<Move> calculateLegalMoves(Board board) {
+    public Collection<Move> calculateLegalMoves(final Board board) {
 
-        int candidateDestinationCoordinate;
         final List<Move> legalMoves = new ArrayList<>();
 
         for(final int currentCandidateOffset : CANDIDATE_MOVE_COORDINATE) {
-            candidateDestinationCoordinate = this.piecePosition + currentCandidateOffset;
+            final int candidateDestinationCoordinate = this.piecePosition + currentCandidateOffset;
             if(BoardUtils.isValidTileCoordinate(candidateDestinationCoordinate)) {
+
+                if(isFirstColumnExclusion(this.piecePosition, currentCandidateOffset) ||
+                        isSecondColumnExclusion(this.piecePosition, currentCandidateOffset) ||
+                        isSeventhColumnExclusion(this.piecePosition, currentCandidateOffset) ||
+                        isEighthColumnExclusion(this.piecePosition, currentCandidateOffset)) {
+                    continue;
+                }
+
                 final Tile candidateDestinationTile = board.getTile(candidateDestinationCoordinate);
                 if(!candidateDestinationTile.isTileOccupied()) {
-                    legalMoves.add(new Move());
+                    legalMoves.add(new MajorMove(board, this, candidateDestinationCoordinate));
                 } else {
                     final Piece pieceAtDestination = candidateDestinationTile.getPiece();
                     final Alliance pieceAlliance = pieceAtDestination.getPieceAlliance();
                     //Enemy piece
                     if(this.pieceAlliance != pieceAlliance) {
-                        legalMoves.add(new Move());
+                        legalMoves.add(new AttackMove(board, this, candidateDestinationCoordinate, pieceAtDestination));
                     }
                 }
             }
@@ -53,8 +64,24 @@ public class Knight extends Piece{
         return ImmutableList.copyOf(legalMoves);
     }
 
+    private boolean isEighthColumnExclusion(int piecePosition, int candidateOffset) {
+        return BoardUtils.EIGHTH_COLUMN[piecePosition] && (candidateOffset == -6 || candidateOffset == 10 ||
+                candidateOffset == 17);
+    }
+
+    private boolean isSeventhColumnExclusion(int currentPosition, int CandidateOffset) {
+        return BoardUtils.SEVENTH_COLUMN[currentPosition] && (CandidateOffset == -17 || CandidateOffset == -10 ||
+                CandidateOffset == 6 || CandidateOffset == 15);
+    }
+
+    private boolean isSecondColumnExclusion(int piecePosition, int candidateOffset) {
+        return BoardUtils.SECOND_COLUMN[piecePosition] && (candidateOffset == -17 || candidateOffset == -10 ||
+                candidateOffset == 6 || candidateOffset == 15);
+    }
+
     private static boolean isFirstColumnExclusion(final int currentPosition, final int candidateOffset) {
-        return BoardUtils.FIRST_COLUMN[currentPosition] && (candidateOffset == -17 || candidateOffset == -10 || candidateOffset == 6 || candidateOffset == 15);
+        return BoardUtils.FIRST_COLUMN[currentPosition] && (candidateOffset == -17 || candidateOffset == -10 ||
+                candidateOffset == 6 || candidateOffset == 15);
     }
 
 
