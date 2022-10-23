@@ -16,7 +16,6 @@ public abstract class Move {
     }
 
     public static final class MajorMove extends Move{
-
         public MajorMove(final Board board,
                          final Piece movedPiece,
                          final int destinationCoordinate) {
@@ -25,9 +24,7 @@ public abstract class Move {
     }
 
     public static final class AttackMove extends Move{
-
         final Piece attackedPiece;
-
         public AttackMove(final Board board,
                           final Piece movedPiece,
                           final int destinationCoordinate,
