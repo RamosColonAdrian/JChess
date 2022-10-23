@@ -22,8 +22,8 @@ public class Knight extends Piece{
      * @param piecePosition
      * @param pieceAlliance
      */
-    Knight(final int piecePosition, final Alliance pieceAlliance) {
-        super(piecePosition, pieceAlliance);
+    public Knight(final int piecePosition, final Alliance pieceAlliance) {
+        super( PieceType.KNIGHT, piecePosition, pieceAlliance);
     }
 
     /**
@@ -62,6 +62,11 @@ public class Knight extends Piece{
             }
         }
         return ImmutableList.copyOf(legalMoves);
+    }
+
+    @Override
+    public String toString(){
+        return PieceType.KNIGHT.toString();
     }
 
     private boolean isEighthColumnExclusion(int piecePosition, int candidateOffset) {
