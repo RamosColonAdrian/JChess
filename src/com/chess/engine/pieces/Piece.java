@@ -7,8 +7,6 @@ import com.chess.engine.board.Move;
 import java.util.Collection;
 
 public abstract class Piece {
-
-
     protected final PieceType pieceType;
     protected final int piecePosition;
     protected final Alliance pieceAlliance;
